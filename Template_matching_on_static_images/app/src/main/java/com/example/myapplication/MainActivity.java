@@ -61,7 +61,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     //initializing variables
-    private static Mat image1;
+    private static Mat door_open;
+    private static Mat door_close;
+    private static Mat door_close_tester;
+    private static Mat door_open_tester;
     private Imgcodecs imageCodecs = new Imgcodecs();
     InputStream bit = null;
     private ImageView imageView;
@@ -74,6 +77,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         imageView = (ImageView) findViewById(R.id.imageView);
         load_image1();
+        load_image2();
+        load_image3();
+        load_image4();
+
+        //All test cases for template matching
+        Mat template_output = new Mat();
+        int matchMethod = Imgproc.TM_CCORR_NORMED;
+        Imgproc.matchTemplate(door_close_tester,door_close,template_output,matchMethod);
+        //Imgproc.matchTemplate(door_close_tester,door_open,template_output,matchMethod);
+        //Imgproc.matchTemplate(door_open_tester,door_close,template_output,matchMethod);
+        //Imgproc.matchTemplate(door_open_tester,door_open,template_output,matchMethod);
+        Core.MinMaxLocResult mmr = Core.minMaxLoc(template_output);
+        System.out.println("*******\n*********\n");
+        System.out.println(mmr.maxVal);
+        System.out.println("*******\n*********\n");
 
 
     }
@@ -82,15 +100,103 @@ public class MainActivity extends AppCompatActivity {
         //reading image by going to the path in asset folder
         InputStream bit=null;
         try {
-            bit=getAssets().open("door_open_template.jpg");
+            bit=getAssets().open("door_open_template.jpeg");
             BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
             bmpFactoryOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bmp = BitmapFactory.decodeStream(bit, null, bmpFactoryOptions);
             Mat ImageMat = new Mat();
             Utils.bitmapToMat(bmp, ImageMat);
-            image1 = ImageMat;
+            door_open = new Mat();
+            Imgproc.cvtColor(ImageMat,door_open,Imgproc.COLOR_RGBA2GRAY);
             System.out.println("**********\n");
-            System.out.println(image1);
+            System.out.println(door_open);
+            imageView.setImageBitmap(bmp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(bit!=null) {
+                try {
+                    bit.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public void load_image2(){
+        //reading image by going to the path in asset folder
+        InputStream bit=null;
+        try {
+            bit=getAssets().open("door_closed_template.jpeg");
+            BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
+            bmpFactoryOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bmp = BitmapFactory.decodeStream(bit, null, bmpFactoryOptions);
+            Mat ImageMat = new Mat();
+            Utils.bitmapToMat(bmp, ImageMat);
+            door_close = new Mat();
+            Imgproc.cvtColor(ImageMat,door_close,Imgproc.COLOR_RGBA2GRAY);
+            System.out.println("**********\n");
+            System.out.println(door_close);
+            imageView.setImageBitmap(bmp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(bit!=null) {
+                try {
+                    bit.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public void load_image3(){
+        //reading image by going to the path in asset folder
+        InputStream bit=null;
+        try {
+            bit=getAssets().open("door_open_tester.jpeg");
+            BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
+            bmpFactoryOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bmp = BitmapFactory.decodeStream(bit, null, bmpFactoryOptions);
+            Mat ImageMat = new Mat();
+            Utils.bitmapToMat(bmp, ImageMat);
+            door_open_tester = new Mat();
+            Imgproc.cvtColor(ImageMat,door_open_tester,Imgproc.COLOR_RGBA2GRAY);
+            System.out.println("**********\n");
+            System.out.println(door_open_tester);
+            imageView.setImageBitmap(bmp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(bit!=null) {
+                try {
+                    bit.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public void load_image4(){
+        //reading image by going to the path in asset folder
+        InputStream bit=null;
+        try {
+            bit=getAssets().open("door_close_tester.jpeg");
+            BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
+            bmpFactoryOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bmp = BitmapFactory.decodeStream(bit, null, bmpFactoryOptions);
+            Mat ImageMat = new Mat();
+            Utils.bitmapToMat(bmp, ImageMat);
+            door_close_tester = new Mat();
+            Imgproc.cvtColor(ImageMat,door_close_tester,Imgproc.COLOR_RGBA2GRAY);
+            System.out.println("**********\n");
+            System.out.println(door_open);
             imageView.setImageBitmap(bmp);
         } catch (IOException e) {
             e.printStackTrace();
