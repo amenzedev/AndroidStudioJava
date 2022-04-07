@@ -2,8 +2,11 @@ package com.example.wifidirect;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +20,14 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private TextView read_msg_box, connectionStatus;
     private EditText writeMsg;
+
     WifiManager wifiManager;
+    WifiP2pManager mManager;
+    WifiP2pManager.Channel mChannel;
+
+    BroadcastReceiver mReceiver;
+    IntentFilter mintentFilter;
+
 
 
     @Override
@@ -56,6 +66,27 @@ public class MainActivity extends AppCompatActivity {
 
         wifiManager =(WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
+        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        mChannel = mManager.initialize(this, getMainLooper(),null);
 
+        mReceiver = new WifiDirectBroadcastReceiver(mManager,mChannel,this);
+        mintentFilter=new IntentFilter();
+        mintentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        mintentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        mintentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        mintentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(mReceiver,mintentFilter);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
     }
 }
