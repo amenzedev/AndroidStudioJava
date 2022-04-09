@@ -212,19 +212,19 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(mReceiver);
     }
 
-//    public class ServerClass extends Thread{
-//        Socket socket;
-//        ServerSocket serverSocket;
-//
-//        @Override
-//        public void run() {
-//            try{
-//                serverSocket = new ServerSocket(888888);
-//                socket = serverSocket.accept();
-//            }catch (IOException e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    public class ServerClass extends Thread{
+        Socket socket;
+        ServerSocket serverSocket;
+
+        @Override
+        public void run() {
+            try{
+                serverSocket = new ServerSocket(888888);
+                socket = serverSocket.accept();
+            }catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 }
