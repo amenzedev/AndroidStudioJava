@@ -9,12 +9,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.InetAddresses;
 import android.net.wifi.WifiManager;
+import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +26,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +107,29 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final WifiP2pDevice device = deviceArray[i];
+                WifiP2pConfig config = new WifiP2pConfig();
+                config.deviceAddress = device.deviceAddress;
+
+                mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(getApplicationContext(),"Connected to "+device.deviceName,Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(int i) {
+
+                        Toast.makeText(getApplicationContext(),"Not Connected",Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+            }
+        });
     }
 
     private void initialWork() {
@@ -152,6 +183,22 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    WifiP2pManager.ConnectionInfoListener connectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
+        @Override
+        public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
+            final InetAddress groupOwnerAddress = wifiP2pInfo.groupOwnerAddress;
+
+            if(wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner)
+            {
+                connectionStatus.setText("Host");
+            }
+            else if(wifiP2pInfo.groupFormed)
+            {
+                connectionStatus.setText("Client");
+            }
+        }
+    };
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -164,4 +211,20 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         unregisterReceiver(mReceiver);
     }
+
+//    public class ServerClass extends Thread{
+//        Socket socket;
+//        ServerSocket serverSocket;
+//
+//        @Override
+//        public void run() {
+//            try{
+//                serverSocket = new ServerSocket(888888);
+//                socket = serverSocket.accept();
+//            }catch (IOException e)
+//            {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }
