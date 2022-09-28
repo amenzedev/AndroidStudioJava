@@ -9,6 +9,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_email.xml" value="0.118" />
         <entry key="app/src/main/res/drawable/ic_baseline_password.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_person.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_registration.xml" value="0.22" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.118" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.118" />
